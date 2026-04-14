@@ -2,14 +2,14 @@ const ART_DATA = {
   1: {
     title: "Expressive Portrait I",
     image: "art/1.jpg",
-    processImages: ["art/2.jpg", "art/5.jpg", "art/4.png"],
+    processImages: ["art/1.jpg", "art/1_2.png", "art/1_3.png"],
     description:
       "A bright and expressive headshot centered on emotion, clean lighting, and character personality.",
   },
   2: {
     title: "Expressive Portrait II",
     image: "art/2.jpg",
-    processImages: ["art/1.jpg", "art/5.jpg", "art/3.png"],
+    processImages: ["art/2.jpg", "art/2_1.png", "art/2_3.png"],
     description:
       "A festive portrait piece with soft tonal blending and playful color atmosphere.",
   },
