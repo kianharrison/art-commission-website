@@ -160,7 +160,7 @@ if (galleryCategorySelect && artSubcategorySelect && galleryGrid) {
     // Add your real channel id (UC...) and YouTube Data API key to auto-load videos.
     channelId: "UCufJo4cDL_B6-X8lgVWNsQQ",
     apiKey: "AIzaSyDrzZBSBVhDkenFhkfDObQy2kA1TEEPWe0",
-    maxResults: 6,
+    maxResults: 24,
     fallbackVideoIds: [],
   };
 
