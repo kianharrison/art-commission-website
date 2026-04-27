@@ -34,6 +34,13 @@ const ART_DATA = {
     description:
       "Narrative-focused artwork with a balanced composition and smooth painterly finish.",
   },
+  6: {
+    title: "Neon Pulse Character",
+    image: "art/6.png",
+    processImages: ["art/6.png", "art/6_2.png", "art/6_3.png"],
+    description:
+      "Dynamic character artwork with layered lighting and clean finishing details.",
+  },
 };
 
 const params = new URLSearchParams(window.location.search);
@@ -43,12 +50,36 @@ const art = ART_DATA[artId] || ART_DATA[1];
 const imageEl = document.getElementById("art-detail-image");
 const titleEl = document.getElementById("art-detail-title");
 const descEl = document.getElementById("art-detail-description");
-const processEls = document.querySelectorAll(".art-process-image");
+const imageSwitcherEl = document.getElementById("art-image-switcher");
+const processImages = Array.isArray(art.processImages) && art.processImages.length
+  ? art.processImages
+  : [art.image];
+
+let activeImageIndex = 0;
+
+const setActiveImage = (index) => {
+  if (!imageEl) {
+    return;
+  }
+
+  const boundedIndex = Math.max(0, Math.min(processImages.length - 1, index));
+  activeImageIndex = boundedIndex;
+  const nextImage = processImages[boundedIndex];
+
+  imageEl.src = nextImage;
+  imageEl.alt = `${art.title} process ${boundedIndex + 1}`;
+  imageEl.loading = "lazy";
+
+  if (imageSwitcherEl) {
+    imageSwitcherEl.querySelectorAll(".art-switch-dot").forEach((button, buttonIndex) => {
+      button.classList.toggle("active", buttonIndex === boundedIndex);
+      button.setAttribute("aria-pressed", buttonIndex === boundedIndex ? "true" : "false");
+    });
+  }
+};
 
 if (imageEl) {
-  imageEl.src = art.image;
-  imageEl.alt = art.title;
-  imageEl.loading = "lazy";
+  setActiveImage(0);
 }
 
 if (titleEl) {
@@ -59,12 +90,20 @@ if (descEl) {
   descEl.textContent = art.description;
 }
 
-if (processEls.length) {
-  processEls.forEach((image, index) => {
-    image.src = art.processImages[index] || art.image;
-    image.alt = `${art.title} process ${index + 1}`;
-    image.loading = "lazy";
+if (imageSwitcherEl) {
+  imageSwitcherEl.innerHTML = "";
+
+  processImages.forEach((_, index) => {
+    const switchButton = document.createElement("button");
+    switchButton.className = "art-switch-dot";
+    switchButton.type = "button";
+    switchButton.setAttribute("aria-label", `Show process image ${index + 1}`);
+    switchButton.setAttribute("aria-pressed", index === activeImageIndex ? "true" : "false");
+    switchButton.addEventListener("click", () => setActiveImage(index));
+    imageSwitcherEl.appendChild(switchButton);
   });
+
+  setActiveImage(activeImageIndex);
 }
 
 document.title = `${art.title} | KianLooksBetter`;

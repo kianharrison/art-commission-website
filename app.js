@@ -32,13 +32,17 @@ const revealSelectors = [
   "#contact",
   "#footer",
   ".section-title",
+  ".gallery-filter-row",
   ".photo-gallery > div",
   ".photo-gallery2 .card",
   "#services .service-item",
   "#contact .contact-item",
   ".button",
   ".selected-img-section",
+  ".art-detail-image-wrap",
+  ".art-detail-info-wrap",
   ".service-detail-panel",
+  ".service-samples-title",
   ".sample-card",
 ];
 
@@ -225,6 +229,16 @@ if (galleryCategorySelect && artSubcategorySelect && galleryGrid) {
   };
 
   const getChannelUploadVideos = async () => {
+    const getVideoTypeFromUrl = (url) => {
+      if (url.includes("/shorts/")) {
+        return "shorts";
+      }
+      if (url.includes("watch?v=")) {
+        return "long_form";
+      }
+      return "unknown";
+    };
+
     const uploadsPlaylistId = await getUploadsPlaylistId();
     if (!uploadsPlaylistId) {
       return [];
@@ -250,13 +264,21 @@ if (galleryCategorySelect && artSubcategorySelect && galleryGrid) {
             item.snippet.resourceId &&
             item.snippet.resourceId.videoId);
         const title = item.snippet && item.snippet.title;
+        const watchUrl = videoId
+          ? `https://www.youtube.com/watch?v=${videoId}`
+          : "";
+        const videoType = getVideoTypeFromUrl(watchUrl);
 
         if (!videoId || seen.has(videoId)) {
           return;
         }
 
+        if (videoType !== "long_form") {
+          return;
+        }
+
         seen.add(videoId);
-        collected.push({ videoId, title });
+        collected.push({ videoId, title, watchUrl, videoType });
       });
 
       if (!data.nextPageToken || !items.length) {
@@ -301,6 +323,7 @@ if (galleryCategorySelect && artSubcategorySelect && galleryGrid) {
     if (artSubcategoryGroup) {
       artSubcategoryGroup.style.display = category === "art" ? "flex" : "none";
     }
+    galleryGrid.classList.toggle("animation-layout", category === "animation");
 
     let visibleCount = 0;
 
